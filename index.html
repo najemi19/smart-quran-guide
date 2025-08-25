@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مرشد القرآن الذكي</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --ink:#e5e7eb; --brand:#22c55e; --brand-ink:#052e16; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";background:var(--bg);color:var(--ink);}
+    .wrap{max-width:1000px;margin:32px auto;padding:16px}
+    .card{background:var(--card);border:1px solid #1f2937;border-radius:18px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1{margin:0 0 8px;font-size:28px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1 1 240px}
+    input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #334155;background:#0b1220;color:var(--ink);outline:none}
+    input::placeholder{color:#93a1b1}
+    button{cursor:pointer;background:linear-gradient(135deg,#16a34a,#22c55e);border:none;color:#04210f;font-weight:700}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .results{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
+    .item{background:#0b1220;border:1px solid #1f2937;border-radius:16px;padding:14px}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;color:#9ca3af;font-size:13px}
+    .ayah{font-size:20px;line-height:1.9;margin:8px 0;word-spacing:3px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tag{background:#0b1628;border:1px solid #1f2937;color:#cbd5e1;border-radius:999px;padding:4px 10px;font-size:12px}
+    .empty, .error{padding:18px;border:1px dashed #334155;border-radius:14px;color:#aab4c2;text-align:center}
+    details{background:#0a1020;border:1px solid #1e293b;border-radius:12px;padding:10px 12px;margin-top:10px}
+    summary{cursor:pointer;color:#a7f3d0;font-weight:700}
+    .foot{margin-top:18px;color:#93a1b1;font-size:13px;text-align:center}
+    .small{font-size:12px;color:#9fb0c0}
+    .loading{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:0.5}50%{opacity:1}100%{opacity:0.5}}
+    .counter{font-variant-numeric:tabular-nums;color:#a7f3d0}
+    .hl{background:#052e16;color:#a7f3d0;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <a href="https://www.EsmartMarketPro.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+          <img src="https://www.EsmartMarketPro.com/logo.png" alt="E-Smart Market Pro" onerror="this.style.display='none'" style="border-radius:8px;border:1px solid #1f2937;background:#fff;width:50px;height:50px;object-fit:contain">
+          <span style="color:#a7f3d0;font-weight:bold">E-Smart Market Pro</span>
+        </a>
+        <h1 style="margin:0">مرشد القرآن الذكي</h1>
+        <div style="margin-left:auto">
+          <select id="pageLang">
+            <option value="">🌐 لغة الصفحة</option>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+      </div>
+      <p class="lead">ابحث بكلمة أو موضوع ليتم إرجاع الآيات المناسبة مع معلومات السورة ورقم الآية وروابط مباشرة للتفاسير الموثوقة.</p>
+
+      <div class="row" style="margin-bottom:10px">
+        <input id="q" placeholder="اكتب كلمة أو موضوع (مثل: العدل، الصبر، الربا…)" />
+        <select id="limit">
+          <option value="5">أظهر 5</option>
+          <option value="10" selected>أظهر 10</option>
+          <option value="20">أظهر 20</option>
+          <option value="50">أظهر 50</option>
+        </select>
+        <button id="go">بحث بالقرآن</button>
+      </div>
+
+      <div class="small">المصدر النصي: <span class="hl">api.alquran.cloud</span> — التفاسير عبر روابط مباشرة إلى <span class="hl">quran.com</span> لتفادي مشاكل CORS.</div>
+
+      <div id="status" class="small" style="margin-top:8px"></div>
+
+      <div id="results" class="results"></div>
+
+      <div class="foot">⚠️ ملاحظة: في حال لم تظهر التفاسير داخل الصفحة، استخدم الروابط المباشرة لكل آية للاطلاع على التفسير في موقع القرآن.كوم.</div>
+    </div>
+  </div>
+
+<script>
+const qEl = document.getElementById('q');
+const limitEl = document.getElementById('limit');
+const goEl = document.getElementById('go');
+const resultsEl = document.getElementById('results');
+const statusEl = document.getElementById('status');
+
+function setStatus(msg, kind='info'){
+  statusEl.textContent = msg || '';
+  statusEl.className = 'small ' + (kind === 'loading' ? 'loading' : '');
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function buildTafsirLinks(surahNumber, ayahNumber){
+  const vk = `${surahNumber}:${ayahNumber}`;
+  const base = `https://quran.com/${surahNumber}/${ayahNumber}?translations=131&tafsirs=ar-tafsir-alsadi,ar-tafsir-ibn-kathir,ar-tafsir-al-tabari`;
+  return `
+    <div class="actions">
+      <a class="tag" target="_blank" rel="noopener" href="${base}">فتح التفسير الموثوق (quran.com)</a>
+      <span class="tag">مفتاح الآية: ${vk}</span>
+    </div>
+  `;
+}
+
+async function searchQuran(query, limit=10){
+  const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/ar`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error('فشل الاتصال بمصدر القرآن');
+  const data = await r.json();
+  return data?.data?.matches || [];
+}
+
+function renderMatches(matches, limit){
+  resultsEl.innerHTML = '';
+  if (!matches.length){
+    resultsEl.innerHTML = `<div class="empty">لم يتم العثور على آيات مطابقة. جرب كلمة قريبة أو مرادفًا.</div>`;
+    return;
+  }
+  const slice = matches.slice(0, limit);
+  slice.forEach((m, i) => {
+    const ayahText = escapeHtml(m.text || '');
+    const surahNum = m?.surah?.number;
+    const surahName = m?.surah?.name || m?.surah?.englishName || 'سورة غير معروفة';
+    const ayahNo = m?.numberInSurah;
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.innerHTML = `
+      <div class="meta">
+        <span class="tag">النتيجة <span class="counter">${i+1}</span></span>
+        <span class="tag">${escapeHtml(surahName)}</span>
+        <span class="tag">آية: ${ayahNo}</span>
+      </div>
+      <div class="ayah">﴿ ${ayahText} ﴾</div>
+      ${buildTafsirLinks(surahNum, ayahNo)}
+      <details>
+        <summary>معلومات تقنية</summary>
+        <div class="small">Surah: ${surahNum} — Ayah: ${ayahNo} — Global #: ${m.number}</div>
+      </details>
+    `;
+    resultsEl.appendChild(item);
+  });
+}
+
+async function handleSearch(){
+  const query = (qEl.value || '').trim();
+  if(!query){ qEl.focus(); return; }
+  goEl.disabled = true;
+  setStatus('جاري البحث في المصحف الشريف…', 'loading');
+  try{
+    const matches = await searchQuran(query, +limitEl.value);
+    renderMatches(matches, +limitEl.value);
+    if(matches.length){
+      setStatus(`تم العثور على ${matches.length} آية/مطابقة. المعروضة: ${Math.min(matches.length, +limitEl.value)}.`);
+    }else{
+      setStatus('لا نتائج. حاول كلمات بديلة مثل: التقوى، الصبر، النفاق، البيع، الربا…');
+    }
+  }catch(err){
+    console.error(err);
+    resultsEl.innerHTML = `<div class="error">حدث خطأ أثناء البحث. تأكد من اتصال الإنترنت وحاول لاحقًا.</div>`;
+    setStatus('تعذر إتمام الطلب.');
+  }finally{
+    goEl.disabled = false;
+  }
+}
+
+goEl.addEventListener('click', handleSearch);
+qEl.addEventListener('keydown', e => { if(e.key === 'Enter') handleSearch(); });
+
+// تلميح أولي
+qEl.value = 'العدل';
+</script>
+
+<div id="google_translate_element" style="display:none"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'ar,en,fr,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+document.getElementById('pageLang').addEventListener('change', function(){
+  var lang = this.value;
+  if(lang){
+    var gtFrame = document.querySelector('iframe.goog-te-menu-frame');
+    if(!gtFrame){
+      alert('جارِ تفعيل أداة الترجمة، حاول بعد ثوانٍ.');
+      return;
+    }
+    var innerDoc = gtFrame.contentDocument || gtFrame.contentWindow.document;
+    var langLink = innerDoc.querySelector('a[lang="'+lang+'"]');
+    if(langLink){ langLink.click(); }
+  }
+});
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
