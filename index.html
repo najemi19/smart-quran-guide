@@ -1,197 +1,211 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مرشد القرآن الذكي</title>
-  <style>
-    :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --ink:#e5e7eb; --brand:#22c55e; --brand-ink:#052e16; }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";background:var(--bg);color:var(--ink);}
-    .wrap{max-width:1000px;margin:32px auto;padding:16px}
-    .card{background:var(--card);border:1px solid #1f2937;border-radius:18px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    h1{margin:0 0 8px;font-size:28px}
-    p.lead{margin:0 0 18px;color:var(--muted)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .row > *{flex:1 1 240px}
-    input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #334155;background:#0b1220;color:var(--ink);outline:none}
-    input::placeholder{color:#93a1b1}
-    button{cursor:pointer;background:linear-gradient(135deg,#16a34a,#22c55e);border:none;color:#04210f;font-weight:700}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .results{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
-    .item{background:#0b1220;border:1px solid #1f2937;border-radius:16px;padding:14px}
-    .meta{display:flex;gap:10px;flex-wrap:wrap;color:#9ca3af;font-size:13px}
-    .ayah{font-size:20px;line-height:1.9;margin:8px 0;word-spacing:3px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .tag{background:#0b1628;border:1px solid #1f2937;color:#cbd5e1;border-radius:999px;padding:4px 10px;font-size:12px}
-    .empty, .error{padding:18px;border:1px dashed #334155;border-radius:14px;color:#aab4c2;text-align:center}
-    details{background:#0a1020;border:1px solid #1e293b;border-radius:12px;padding:10px 12px;margin-top:10px}
-    summary{cursor:pointer;color:#a7f3d0;font-weight:700}
-    .foot{margin-top:18px;color:#93a1b1;font-size:13px;text-align:center}
-    .small{font-size:12px;color:#9fb0c0}
-    .loading{animation:pulse 1.2s ease-in-out infinite}
-    @keyframes pulse{0%{opacity:0.5}50%{opacity:1}100%{opacity:0.5}}
-    .counter{font-variant-numeric:tabular-nums;color:#a7f3d0}
-    .hl{background:#052e16;color:#a7f3d0;padding:2px 6px;border-radius:6px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرشد القرآن الذكي — القرآن المرقوم عبر العصور</title>
+<meta name="description" content="منصة قرآنية تفاعلية نافعة للدين والدنيا — بحث عن القرآن المرقوم بين المعنى التراثي والمفهوم الرقمي المعاصر.">
+<meta name="keywords" content="القرآن المرقوم, مرشد القرآن الذكي, آية اليوم, البحث القرآني, مواقيت الصلاة, حفظ القرآن, تحدي الإتيان بمثله">
+<meta property="og:title" content="مرشد القرآن الذكي — القرآن المرقوم عبر العصور">
+<meta property="og:description" content="بحث عن القرآن المرقوم بين المعنى التراثي والمفهوم الرقمي المعاصر.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://najemi19.github.io/smart-quran-guide/">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#065143">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+<style>
+:root{--green:#065143;--green2:#087f5b;--gold:#ffd700;--bg:#f9f9f4;--ink:#333;}
+body{margin:0;font-family:'Amiri',serif;background:var(--bg);color:var(--ink);scroll-behavior:smooth;}
+header{background:linear-gradient(135deg,var(--green),#044135);color:#fff;padding:30px 15px;text-align:center;}
+header h1{margin:0;font-size:2rem}
+header p.lead{max-width:900px;margin:10px auto 0;line-height:1.8}
+nav{background:var(--green2);padding:10px;text-align:center;position:sticky;top:0;z-index:999}
+nav a,nav button{color:#fff;margin:0 5px;text-decoration:none;font-weight:bold;border:none;background:none;cursor:pointer}
+nav a:hover,nav button:hover{color:var(--gold)}
+section{padding:20px;max-width:1100px;margin:auto}
+h2{color:var(--green);border-right:4px solid var(--gold);padding-right:8px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.ayah{background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);text-align:center;font-size:1.5rem;color:var(--green);margin-bottom:14px}
+.btn{background:var(--green2);color:#fff;padding:8px 14px;border:none;border-radius:6px;cursor:pointer;text-decoration:none}
+.btn:hover{background:#099268}
+input[type=text]{padding:10px;width:70%;border-radius:8px;border:1px solid #ccc}
+.social-fixed{position:fixed;top:50%;left:0;transform:translateY(-50%);display:flex;flex-direction:column;z-index:1000}
+.social-fixed a{display:block;padding:10px;color:#fff;text-align:center;text-decoration:none}
+.fb{background:#3b5998}.ig{background:#e4405f}.li{background:#0077b5}.yt{background:#ff0000}.wa{background:#25d366}
+footer{background:#222;color:#ccc;text-align:center;padding:15px;font-size:14px}
+:root[data-theme="dark"]{--bg:#0f1716;--ink:#e7e7e7;--green:#0d4037;--green2:#0f6b53;}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <a href="https://www.EsmartMarketPro.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;text-decoration:none">
-          <img src="https://www.EsmartMarketPro.com/logo.png" alt="E-Smart Market Pro" onerror="this.style.display='none'" style="border-radius:8px;border:1px solid #1f2937;background:#fff;width:50px;height:50px;object-fit:contain">
-          <span style="color:#a7f3d0;font-weight:bold">E-Smart Market Pro</span>
-        </a>
-        <h1 style="margin:0">مرشد القرآن الذكي</h1>
-        <div style="margin-left:auto">
-          <select id="pageLang">
-            <option value="">🌐 لغة الصفحة</option>
-            <option value="ar">العربية</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-          </select>
-        </div>
-      </div>
-      <p class="lead">ابحث بكلمة أو موضوع ليتم إرجاع الآيات المناسبة مع معلومات السورة ورقم الآية وروابط مباشرة للتفاسير الموثوقة.</p>
 
-      <div class="row" style="margin-bottom:10px">
-        <input id="q" placeholder="اكتب كلمة أو موضوع (مثل: العدل، الصبر، الربا…)" />
-        <select id="limit">
-          <option value="5">أظهر 5</option>
-          <option value="10" selected>أظهر 10</option>
-          <option value="20">أظهر 20</option>
-          <option value="50">أظهر 50</option>
-        </select>
-        <button id="go">بحث بالقرآن</button>
-      </div>
+<div class="social-fixed">
+  <a href="#" class="fb">F</a>
+  <a href="#" class="ig">I</a>
+  <a href="#" class="li">L</a>
+  <a href="#" class="yt">Y</a>
+  <a href="#" class="wa">W</a>
+</div>
 
-      <div class="small">المصدر النصي: <span class="hl">api.alquran.cloud</span> — التفاسير عبر روابط مباشرة إلى <span class="hl">quran.com</span> لتفادي مشاكل CORS.</div>
+<header>
+  <h1>📖 مرشد القرآن الذكي</h1>
+  <p class="lead">صدقة جارية — بحث “القرآن المرقوم” بين التراث والرقمنة مع أدوات بحث ومواقيت وخدمات تفاعلية.</p>
+</header>
 
-      <div id="status" class="small" style="margin-top:8px"></div>
+<nav>
+  <a href="#ayah">آية اليوم</a>
+  <a href="#search">بحث</a>
+  <a href="#services">خدمات</a>
+  <a href="#research">بحث القرآن المرقوم</a>
+  <a href="#contact">اتصل بنا</a>
+  <button id="themeToggle">الوضع الداكن</button>
+</nav>
 
-      <div id="results" class="results"></div>
+<section id="ayah">
+  <h2>آية اليوم</h2>
+  <div id="ayahBox" class="ayah">جاري تحميل الآية...</div>
+  <p id="ayahInfo"></p>
+  <button id="favAyah" class="btn">حفظ في المفضلة</button>
+  <button id="shareBtn" class="btn">مشاركة</button>
+  <div id="favList" class="card" style="margin-top:10px"></div>
+</section>
 
-      <div class="foot">⚠️ ملاحظة: في حال لم تظهر التفاسير داخل الصفحة، استخدم الروابط المباشرة لكل آية للاطلاع على التفسير في موقع القرآن.كوم.</div>
-    </div>
+<section id="search">
+  <h2>بحث في القرآن الكريم</h2>
+  <form id="searchForm">
+    <input type="text" id="searchQuery" placeholder="أدخل كلمة أو آية">
+    <button type="submit" class="btn">بحث</button>
+  </form>
+  <div id="searchResults" class="card" style="margin-top:14px"></div>
+</section>
+
+<section id="services">
+  <h2>خدمات</h2>
+  <div class="grid">
+    <div class="card"><h3>مواقيت الصلاة</h3><div id="prayerTimes">جاري تحديد الموقع...</div></div>
+    <div class="card"><h3>اتجاه القبلة</h3><p id="qiblaDeg">—</p></div>
   </div>
+</section>
+
+<section id="research">
+  <h2>بحث: القرآن المرقوم بين الماضي والحاضر</h2>
+  <div class="card">
+    <p>“كتاب مرقوم” وصف قرآني للسجل المحكم، يقابله اليوم مفهوم السجلات الرقمية المؤمَّنة والمشفَّرة، مع بقاء النص محفوظًا بحفظ الله.</p>
+    <ul>
+      <li>تراثيًا: مكتوب، مختوم، محفوظ.</li>
+      <li>رقميًا: مؤرشف، متكامل، غير قابل للتلاعب.</li>
+      <li>إعجازيًا: الحفظ الإلهي قائم والتحدي قائم.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>اتصل بنا</h2>
+  <p>بريد: <a href="mailto:info@example.com">info@example.com</a></p>
+</section>
+
+<footer>
+  <p>© 2025 — مرشد القرآن الذكي</p>
+  <p><a href="privacy.html">سياسة الخصوصية</a> | <a href="terms.html">شروط الاستخدام</a> | <a href="cookies.html">سياسة الكوكيز</a></p>
+</footer>
 
 <script>
-const qEl = document.getElementById('q');
-const limitEl = document.getElementById('limit');
-const goEl = document.getElementById('go');
-const resultsEl = document.getElementById('results');
-const statusEl = document.getElementById('status');
+// الوضع الداكن
+const root = document.documentElement;
+document.getElementById('themeToggle').onclick = ()=>{
+  root.dataset.theme = root.dataset.theme === 'dark' ? '' : 'dark';
+  localStorage.setItem('theme', root.dataset.theme);
+};
+if(localStorage.getItem('theme')==='dark') root.dataset.theme='dark';
 
-function setStatus(msg, kind='info'){
-  statusEl.textContent = msg || '';
-  statusEl.className = 'small ' + (kind === 'loading' ? 'loading' : '');
+// آية اليوم
+const box=document.getElementById('ayahBox'),info=document.getElementById('ayahInfo');
+fetch('https://api.alquran.cloud/v1/ayah/random/ar').then(r=>r.json()).then(d=>{
+  box.textContent=d.data.text;info.textContent=`سورة ${d.data.surah.name} — آية ${d.data.numberInSurah}`;
+});
+// مفضلة الآيات
+document.getElementById('favAyah').onclick=()=>{
+  let favs=JSON.parse(localStorage.getItem('fav')||'[]');
+  favs.unshift({t:box.textContent,m:info.textContent});
+  localStorage.setItem('fav',JSON.stringify(favs.slice(0,50)));
+  renderFav();
+};
+function renderFav(){
+  let favs=JSON.parse(localStorage.getItem('fav')||'[]');
+  document.getElementById('favList').innerHTML=
+    favs.length? favs.map(f=>`<div style="border-bottom:1px solid #eee;padding:6px 0">
+      <div style="color:var(--green)">${f.t}</div>
+      <div class="info">${f.m}</div>
+    </div>`).join('') : '<p class="info">لا توجد آيات محفوظة.</p>';
 }
+renderFav();
 
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-function buildTafsirLinks(surahNumber, ayahNumber){
-  const vk = `${surahNumber}:${ayahNumber}`;
-  const base = `https://quran.com/${surahNumber}/${ayahNumber}?translations=131&tafsirs=ar-tafsir-alsadi,ar-tafsir-ibn-kathir,ar-tafsir-al-tabari`;
-  return `
-    <div class="actions">
-      <a class="tag" target="_blank" rel="noopener" href="${base}">فتح التفسير الموثوق (quran.com)</a>
-      <span class="tag">مفتاح الآية: ${vk}</span>
-    </div>
-  `;
-}
-
-async function searchQuran(query, limit=10){
-  const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/ar`;
-  const r = await fetch(url);
-  if(!r.ok) throw new Error('فشل الاتصال بمصدر القرآن');
-  const data = await r.json();
-  return data?.data?.matches || [];
-}
-
-function renderMatches(matches, limit){
-  resultsEl.innerHTML = '';
-  if (!matches.length){
-    resultsEl.innerHTML = `<div class="empty">لم يتم العثور على آيات مطابقة. جرب كلمة قريبة أو مرادفًا.</div>`;
-    return;
+// مشاركة آية اليوم
+document.getElementById('shareBtn').onclick=()=>{
+  if(navigator.share){
+    navigator.share({
+      title:'آية اليوم — مرشد القرآن الذكي',
+      text:box.textContent,
+      url:location.href
+    });
+  }else{
+    alert('ميزة المشاركة غير مدعومة على هذا المتصفح.');
   }
-  const slice = matches.slice(0, limit);
-  slice.forEach((m, i) => {
-    const ayahText = escapeHtml(m.text || '');
-    const surahNum = m?.surah?.number;
-    const surahName = m?.surah?.name || m?.surah?.englishName || 'سورة غير معروفة';
-    const ayahNo = m?.numberInSurah;
-    const item = document.createElement('div');
-    item.className = 'item';
-    item.innerHTML = `
-      <div class="meta">
-        <span class="tag">النتيجة <span class="counter">${i+1}</span></span>
-        <span class="tag">${escapeHtml(surahName)}</span>
-        <span class="tag">آية: ${ayahNo}</span>
-      </div>
-      <div class="ayah">﴿ ${ayahText} ﴾</div>
-      ${buildTafsirLinks(surahNum, ayahNo)}
-      <details>
-        <summary>معلومات تقنية</summary>
-        <div class="small">Surah: ${surahNum} — Ayah: ${ayahNo} — Global #: ${m.number}</div>
-      </details>
-    `;
-    resultsEl.appendChild(item);
+};
+
+// البحث
+document.getElementById('searchForm').onsubmit=e=>{
+  e.preventDefault();
+  fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(document.getElementById('searchQuery').value)}/all/ar`)
+    .then(r=>r.json()).then(d=>{
+      let out='';
+      if(d.data.matches.length>0){
+        d.data.matches.forEach(m=>{
+          out += `<div style="padding:8px 0;border-bottom:1px solid #eee;">
+                    <div style="color:var(--green)">${m.text}</div>
+                    <div class="info">سورة ${m.surah.name} — آية ${m.numberInSurah}</div>
+                  </div>`;
+        });
+      } else {
+        out = '<p class="info">لا توجد نتائج.</p>';
+      }
+      document.getElementById('searchResults').innerHTML=out;
+    });
+};
+
+// مواقيت الصلاة
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude, lon=pos.coords.longitude;
+    fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
+    .then(r=>r.json()).then(d=>{
+      const t=d.data.timings;
+      document.getElementById('prayerTimes').innerHTML=
+        `الفجر: ${t.Fajr}<br>الشروق: ${t.Sunrise}<br>الظهر: ${t.Dhuhr}<br>العصر: ${t.Asr}<br>المغرب: ${t.Maghrib}<br>العشاء: ${t.Isha}`;
+    });
+  },()=>{document.getElementById('prayerTimes').textContent='تعذر تحديد الموقع';});
+}
+
+// اتجاه القبلة
+function bearingTo(lat1, lon1, lat2=21.4225, lon2=39.8262){
+  const toRad = d => d * Math.PI / 180, toDeg = r => r * 180 / Math.PI;
+  const φ1 = toRad(lat1), φ2 = toRad(lat2), Δλ = toRad(lon2 - lon1);
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+}
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const deg = Math.round(bearingTo(pos.coords.latitude, pos.coords.longitude));
+    document.getElementById('qiblaDeg').textContent = `${deg}° نحو الكعبة`;
   });
 }
 
-async function handleSearch(){
-  const query = (qEl.value || '').trim();
-  if(!query){ qEl.focus(); return; }
-  goEl.disabled = true;
-  setStatus('جاري البحث في المصحف الشريف…', 'loading');
-  try{
-    const matches = await searchQuran(query, +limitEl.value);
-    renderMatches(matches, +limitEl.value);
-    if(matches.length){
-      setStatus(`تم العثور على ${matches.length} آية/مطابقة. المعروضة: ${Math.min(matches.length, +limitEl.value)}.`);
-    }else{
-      setStatus('لا نتائج. حاول كلمات بديلة مثل: التقوى، الصبر، النفاق، البيع، الربا…');
-    }
-  }catch(err){
-    console.error(err);
-    resultsEl.innerHTML = `<div class="error">حدث خطأ أثناء البحث. تأكد من اتصال الإنترنت وحاول لاحقًا.</div>`;
-    setStatus('تعذر إتمام الطلب.');
-  }finally{
-    goEl.disabled = false;
-  }
+// تسجيل Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js');
 }
-
-goEl.addEventListener('click', handleSearch);
-qEl.addEventListener('keydown', e => { if(e.key === 'Enter') handleSearch(); });
-
-// تلميح أولي
-qEl.value = 'العدل';
 </script>
-
-<div id="google_translate_element" style="display:none"></div>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'ar,en,fr,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-}
-document.getElementById('pageLang').addEventListener('change', function(){
-  var lang = this.value;
-  if(lang){
-    var gtFrame = document.querySelector('iframe.goog-te-menu-frame');
-    if(!gtFrame){
-      alert('جارِ تفعيل أداة الترجمة، حاول بعد ثوانٍ.');
-      return;
-    }
-    var innerDoc = gtFrame.contentDocument || gtFrame.contentWindow.document;
-    var langLink = innerDoc.querySelector('a[lang="'+lang+'"]');
-    if(langLink){ langLink.click(); }
-  }
-});
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 </body>
 </html>
